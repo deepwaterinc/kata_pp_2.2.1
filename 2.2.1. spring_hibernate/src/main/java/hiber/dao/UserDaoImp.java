@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.TypedQuery;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Repository
@@ -25,5 +25,16 @@ public class UserDaoImp implements UserDao {
       TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
       return query.getResultList();
    }
-
+   @Override
+   public void clearTable() {
+      Query query=sessionFactory.getCurrentSession().createQuery("delete User");
+      query.executeUpdate();
+   }
+   @Override
+   public List<User> getUserByCar(String model, int series) {
+      Query query = sessionFactory.getCurrentSession()
+              .createQuery("FROM User where car.model = :model and car.series = :series");
+      query.setParameter("model", model).setParameter("series", series);
+      return query.getResultList();
+   }
 }
